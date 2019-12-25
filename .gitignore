@@ -35,6 +35,9 @@ Thumbs.db
 *.settings
 *.directory
 .gradle/
+gradle/wrapper/
+gradlew
+gradlew.bat
 .idea
 
 # File locks
