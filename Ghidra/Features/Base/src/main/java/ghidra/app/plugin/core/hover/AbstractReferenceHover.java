@@ -44,7 +44,7 @@ public abstract class AbstractReferenceHover extends AbstractConfigurableHover {
 
 	public static final int WINDOW_OFFSET = 50;
 
-	protected static final Color BACKGROUND_COLOR = new Color(255, 255, 230);
+	private static final Color BACKGROUND_COLOR = new Color(0x2b, 0x2b, 0x2b);
 
 	protected CodeFormatService codeFormatService;
 	protected ListingPanel panel;
