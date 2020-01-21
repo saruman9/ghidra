@@ -43,11 +43,11 @@ public class PaintContext {
 	 * Create a new PaintContext with default color values.
 	 */
 	public PaintContext() {
-		defaultBackground = Color.white;
-		background = Color.white;
-		foreground = Color.black;
-		selectionColor = new Color(180, 255, 180);
-		highlightColor = new Color(255, 255, 150);
+		defaultBackground = new Color(0x2d, 0x2d, 0x2d);
+		background = new Color(0x2d, 0x2d, 0x2d);
+		foreground = Color.white;
+		selectionColor = new Color(0xaf, 0x00, 0x5f);
+		highlightColor = new Color(0x3d, 0x3d, 0x0d);
 		selectedHighlightColor = Color.green;
 		focusedCursorColor = Color.RED;
 		cursorColor = focusedCursorColor;
