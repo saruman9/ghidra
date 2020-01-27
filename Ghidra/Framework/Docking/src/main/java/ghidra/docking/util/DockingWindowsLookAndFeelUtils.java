@@ -25,6 +25,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.plaf.ComponentUI;
 
 import com.bulenkov.darcula.DarculaLaf;
+import com.formdev.flatlaf.FlatDarkLaf;
 
 import ghidra.docking.util.painting.GRepaintManager;
 import ghidra.framework.OperatingSystem;
@@ -66,6 +67,11 @@ public class DockingWindowsLookAndFeelUtils {
 	 * Dark theme Darcula
 	 */
 	private static final String DARCULA_LOOK_AND_FEEL = "Darcula";
+
+	/**
+	 * Drak theme FlatLaf
+	 */
+	private static final String FLAT_LOOK_AND_FEEL = "FlatLaf";
 
 	private static RepaintManager defaultSwingRepaintManager = null;
 
@@ -153,6 +159,7 @@ public class DockingWindowsLookAndFeelUtils {
 		List<String> list = new ArrayList<>();
 		list.add(DockingWindowsLookAndFeelUtils.SYSTEM_LOOK_AND_FEEL);
 		list.add(DockingWindowsLookAndFeelUtils.DARCULA_LOOK_AND_FEEL);
+		list.add(DockingWindowsLookAndFeelUtils.FLAT_LOOK_AND_FEEL);
 
 		LookAndFeelInfo[] installedLookAndFeels = UIManager.getInstalledLookAndFeels();
 		for (LookAndFeelInfo info : installedLookAndFeels) {
@@ -176,6 +183,9 @@ public class DockingWindowsLookAndFeelUtils {
 		}
 		if (lookAndFeelName.equalsIgnoreCase(DARCULA_LOOK_AND_FEEL)) {
 			return DarculaLaf.class.getName();
+		}
+		if (lookAndFeelName.equalsIgnoreCase(FLAT_LOOK_AND_FEEL)) {
+			return FlatDarkLaf.class.getName();
 		}
 
 		LookAndFeelInfo[] installedLookAndFeels = UIManager.getInstalledLookAndFeels();
