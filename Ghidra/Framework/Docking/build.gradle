@@ -10,6 +10,7 @@ dependencies {
 	compile project(':Generic')
 	compile ':darcula-laf:2019.09'
 	compile 'net.java.dev.timingframework:timingframework:1.0'
+	compile 'com.formdev:flatlaf:0.26'
 	
 	// Only include this debug version of the jh library if necessary.
 	//compile name:'jh2.with.debug'
