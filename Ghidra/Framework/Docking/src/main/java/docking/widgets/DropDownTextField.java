@@ -63,7 +63,7 @@ public class DropDownTextField<T> extends JTextField implements GComponent {
 	private static final int DEFAULT_MAX_UPDATE_DELAY = 2000;
 	private static final int MIN_HEIGHT = 300;
 	private static final int MIN_WIDTH = 200;
-	protected static final Color TOOLTIP_WINDOW_BGCOLOR = new Color(255, 255, 225);
+	protected static final Color TOOLTIP_WINDOW_BGCOLOR = new Color(0x2d, 0x2d, 0x2d);
 
 	private JWindow toolTipWindow; // delayed initialization for parenting
 	private JWindow matchingWindow; // delayed initialization for parenting
