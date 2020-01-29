@@ -47,7 +47,8 @@ dependencies {
 	api ('biz.aQute.bnd:biz.aQute.bndlib:6.2.0') {exclude group: 'org.osgi'}
 	api ('org.osgi:org.osgi.util.promise:1.2.0') {exclude group: 'org.osgi'}
 	api 'org.slf4j:slf4j-api:1.7.25'
-	
+	api 'me.xdrop:fuzzywuzzy:1.2.0'
+
 	runtimeOnly "org.slf4j:slf4j-nop:1.7.25"
 	
 	// use this if you want slf4j log messages sent to log4j
