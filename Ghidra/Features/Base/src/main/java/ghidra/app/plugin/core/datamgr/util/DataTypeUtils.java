@@ -23,6 +23,11 @@ import javax.swing.Icon;
 
 import generic.theme.GColor;
 import generic.theme.GIcon;
+import com.google.common.collect.Lists;
+import me.xdrop.fuzzywuzzy.FuzzySearch;
+import me.xdrop.fuzzywuzzy.model.BoundExtractedResult;
+import me.xdrop.fuzzywuzzy.ratios.PartialRatio;
+
 import ghidra.app.services.DataTypeQueryService;
 import ghidra.program.model.data.*;
 import ghidra.program.model.data.Enum;
@@ -299,6 +304,38 @@ public class DataTypeUtils {
 			DataTypeQueryService dataService) {
 		return getMatchingSubList(searchString, searchString + BEGIN_CHAR,
 			dataService.getSortedDataTypeList());
+	}
+
+	/**
+	 * Returns a sorted list of {@link DataType}s that have names which fuzzy match the given search
+	 * string. The list is sorted according to scoring of fuzzy search.
+	 *
+	 * @param searchString The name of the DataTypes to match.
+	 * @param dataService  The service from which the data types will be taken.
+	 * @param limit        Count of DataTypes, which will be returned
+	 * @return A sorted list of {@link DataType}s that have names which fuzzy match the given search
+	 * string.
+	 */
+	public static List<DataType> getFuzzyMatchingDataTypes(String searchString,
+														   DataTypeQueryService dataService,
+														   int limit) {
+		searchString = prepareSearchText(searchString);
+		List<DataType> dataTypeList = dataService.getSortedDataTypeList();
+		List<BoundExtractedResult<DataType>> matchDataType = FuzzySearch
+				.extractSorted(searchString,
+							   dataTypeList,
+							   dataType -> dataType
+									   .getName()
+									   .toLowerCase(),
+							   new PartialRatio());
+		int size = matchDataType.size();
+		if (size < limit) {
+			matchDataType = matchDataType.subList(0, size);
+		} else {
+			matchDataType = matchDataType.subList(0, limit);
+		}
+
+		return Lists.transform(matchDataType, BoundExtractedResult::getReferent);
 	}
 
 	/**
