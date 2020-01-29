@@ -25,7 +25,8 @@ dependencies {
 	compile project(':SoftwareModeling')
 	compile project(':DB')
 	compile project(':Help')
-	
+	compile 'me.xdrop:fuzzywuzzy:1.2.0'
+
    	compileOnly "junit:junit:4.12"
 	
 	// These have abstract test classes and stubs needed by this module	
