@@ -77,7 +77,7 @@ public class DataTypeDropDownSelectionDataModel implements DropDownTextFieldData
 
 		List<DataType> dataTypeList = DataTypeUtils.getFuzzyMatchingDataTypes(searchText,
 																			  dataTypeService,
-																			  30);
+																			  100);
 		return filterDataTypeList(dataTypeList);
 	}
 
