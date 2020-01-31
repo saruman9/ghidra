@@ -21,6 +21,8 @@ import javax.swing.JToolTip;
 import ghidra.app.services.HoverService;
 import ghidra.framework.plugintool.PluginTool;
 
+import java.awt.Color;
+
 /**
  * Base class for listing hover extensions.
  */
@@ -61,6 +63,7 @@ public abstract class AbstractHover implements HoverService {
 
 		JToolTip tt = new JToolTip();
 		tt.setTipText(content);
+		tt.setBackground(new Color(0x2d, 0x2d, 0x2d));
 		return tt;
 	}
 
