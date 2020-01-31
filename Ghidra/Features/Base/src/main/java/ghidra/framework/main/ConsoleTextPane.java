@@ -200,7 +200,7 @@ public class ConsoleTextPane extends JTextPane implements OptionsChangeListener 
 		outputAttributeSet.addAttribute(StyleConstants.FontSize, font.getSize());
 		outputAttributeSet.addAttribute(StyleConstants.Italic, font.isItalic());
 		outputAttributeSet.addAttribute(StyleConstants.Bold, font.isBold());
-		outputAttributeSet.addAttribute(StyleConstants.Foreground, Color.BLACK);
+		outputAttributeSet.addAttribute(StyleConstants.Foreground, new Color(0xc0, 0xc0, 0xc0));
 
 		errorAttributeSet = new SimpleAttributeSet();
 		errorAttributeSet.addAttribute(CUSTOM_ATTRIBUTE_KEY, ERROR_ATTRIBUTE_VALUE);
