@@ -44,7 +44,7 @@ public abstract class AbstractReferenceHover extends AbstractConfigurableHover {
 
 	public static final int WINDOW_OFFSET = 50;
 
-	private static final Color BACKGROUND_COLOR = new Color(0x2b, 0x2b, 0x2b);
+	private static final Color BACKGROUND_COLOR = new Color(0x2d, 0x2d, 0x2d);
 
 	protected CodeFormatService codeFormatService;
 	protected ListingPanel panel;
@@ -124,6 +124,7 @@ public abstract class AbstractReferenceHover extends AbstractConfigurableHover {
 		panel.setTextBackgroundColor(BACKGROUND_COLOR);
 
 		toolTip = new JToolTip();
+		toolTip.setBackground(new Color(0x2d, 0x2d, 0x2d));
 	}
 
 	@Override
