@@ -100,7 +100,7 @@ public class PluginManagerComponent extends JPanel implements ChangeListener, Sc
 			if (!pluginPackage.isfullyAddable()) {
 				checkBox.setEnabled(false);
 			}
-			
+
 			checkboxPanel.add(Box.createHorizontalStrut(10));
 			checkboxPanel.add(checkBox);
 			checkboxPanel.add(Box.createHorizontalStrut(10));

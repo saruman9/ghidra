@@ -120,12 +120,12 @@ class ExtensionDetailsPanel extends AbstractDetailsPanel {
 
 	@Override
 	protected void createFieldAttributes() {
-		titleAttrSet = createAttributeSet(new Color(140, 0, 0));
+		titleAttrSet = createAttributeSet(new Color(0xc0, 0xc0, 0xc0));
 		nameAttrSet = createAttributeSet(new Color(0, 204, 51));
-		descrAttrSet = createAttributeSet(Color.BLUE);
-		authorAttrSet = createAttributeSet(Color.BLUE);
-		createdOnAttrSet = createAttributeSet(Color.BLUE);
-		versionAttrSet = createAttributeSet(Color.BLUE);
-		pathAttrSet = createAttributeSet(Color.BLUE);
+		descrAttrSet = createAttributeSet(new Color(0xc0, 0xc0, 0xc0));
+		authorAttrSet = createAttributeSet(new Color(0xc0, 0xc0, 0xc0));
+		createdOnAttrSet = createAttributeSet(new Color(0xc0, 0xc0, 0xc0));
+		versionAttrSet = createAttributeSet(new Color(0xc0, 0xc0, 0xc0));
+		pathAttrSet = createAttributeSet(new Color(0xc0, 0xc0, 0xc0));
 	}
 }
