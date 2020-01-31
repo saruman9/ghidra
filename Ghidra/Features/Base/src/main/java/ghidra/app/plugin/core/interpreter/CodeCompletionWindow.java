@@ -37,7 +37,7 @@ import ghidra.app.plugin.core.console.CodeCompletion;
 public class CodeCompletionWindow extends JDialog {
 	private static final long serialVersionUID = 1L;
 	/* from ReferenceHoverPlugin */
-	private static final Color BACKGROUND_COLOR = new Color(255, 255, 230);
+	private static final Color BACKGROUND_COLOR = new Color(0x2d, 0x2d, 0x2d);
 
 	protected final InterpreterPanel console;
 	protected final JTextPane outputTextField;
