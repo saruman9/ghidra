@@ -236,7 +236,7 @@ class PluginDetailsPanel extends AbstractDetailsPanel {
 		titleAttrSet.addAttribute(StyleConstants.FontFamily, "Tahoma");
 		titleAttrSet.addAttribute(StyleConstants.FontSize, Integer.valueOf(11));
 		titleAttrSet.addAttribute(StyleConstants.Bold, Boolean.TRUE);
-		titleAttrSet.addAttribute(StyleConstants.Foreground, new Color(140, 0, 0));
+		titleAttrSet.addAttribute(StyleConstants.Foreground, new Color(0xc0, 0xc0, 0xc0));
 
 		nameAttrSet = new SimpleAttributeSet();
 		nameAttrSet.addAttribute(StyleConstants.FontFamily, "Tahoma");
@@ -254,7 +254,7 @@ class PluginDetailsPanel extends AbstractDetailsPanel {
 		descrAttrSet.addAttribute(StyleConstants.FontFamily, "Tahoma");
 		descrAttrSet.addAttribute(StyleConstants.FontSize, Integer.valueOf(11));
 		descrAttrSet.addAttribute(StyleConstants.Bold, Boolean.TRUE);
-		descrAttrSet.addAttribute(StyleConstants.Foreground, Color.BLUE);
+		descrAttrSet.addAttribute(StyleConstants.Foreground, new Color(0xc0, 0xc0, 0xc0));
 
 		categoriesAttrSet = new SimpleAttributeSet();
 		categoriesAttrSet.addAttribute(StyleConstants.FontFamily, "Tahoma");
@@ -272,7 +272,7 @@ class PluginDetailsPanel extends AbstractDetailsPanel {
 		locAttrSet.addAttribute(StyleConstants.FontFamily, "Tahoma");
 		locAttrSet.addAttribute(StyleConstants.FontSize, Integer.valueOf(11));
 		locAttrSet.addAttribute(StyleConstants.Bold, Boolean.TRUE);
-		locAttrSet.addAttribute(StyleConstants.Foreground, Color.DARK_GRAY);
+		locAttrSet.addAttribute(StyleConstants.Foreground, new Color(0xc0, 0xc0, 0xc0));
 
 		developerAttrSet = new SimpleAttributeSet();
 		developerAttrSet.addAttribute(StyleConstants.FontFamily, "Tahoma");
