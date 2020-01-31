@@ -896,7 +896,7 @@ public class DialogComponentProvider
 		statusLabel = new GDHtmlLabel(" ");
 		statusLabel.setName("statusLabel");
 		statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		statusLabel.setForeground(Color.blue);
+		statusLabel.setForeground(new Color(0x43, 0x57, 0xad));
 		statusLabel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
 		statusLabel.addComponentListener(new ComponentAdapter() {
 			@Override

@@ -210,7 +210,7 @@ public class FunctionEditorDialog extends DialogComponentProvider implements Mod
 			BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.GRAY),
 				BorderFactory.createEmptyBorder(0, 5, 0, 5));
 		thunkedText.setBorder(border);
-		thunkedText.setForeground(Color.BLUE);
+		thunkedText.setForeground(new Color(0x43, 0x57, 0xad));
 		thunkedPanel.add(thunkedText);
 		return thunkedPanel;
 	}
@@ -222,9 +222,6 @@ public class FunctionEditorDialog extends DialogComponentProvider implements Mod
 		scroll = new JScrollPane(verticalScrollPanel);
 		scroll.setBorder(null);
 		scroll.setOpaque(true);
-		scroll.setBackground(Color.WHITE);
-		scroll.getViewport().setBackground(new Color(0, 0, 0, 0)); // transparent
-		scroll.getViewport().setBackground(Color.WHITE);
 		previewPanel.add(scroll, BorderLayout.CENTER);
 		previewPanel.setBorder(BorderFactory.createLoweredBevelBorder());
 		scroll.getViewport().addMouseListener(new MouseAdapter() {
@@ -711,6 +708,7 @@ public class FunctionEditorDialog extends DialogComponentProvider implements Mod
 			boolean isSelected = data.isSelected();
 
 			VariableStorage storage = (VariableStorage) value;
+			Color fg = isSelected ? new Color(0x2d, 0x2d, 0x2d) : new Color(0xc0, 0xc0, 0xc0);
 			if (storage != null) {
 				ParameterTableModel tableModel = (ParameterTableModel) table.getModel();
 				FunctionVariableData rowData = tableModel.getRowObject(row);
@@ -721,13 +719,13 @@ public class FunctionEditorDialog extends DialogComponentProvider implements Mod
 					setToolTipText("Invalid Parameter Storage");
 				}
 				else {
-					setForeground(isSelected ? Color.WHITE : Color.BLACK);
+					setForeground(fg);
 					setToolTipText("");
 				}
 				setText(storage.toString());
 			}
 			else {
-				setForeground(isSelected ? Color.WHITE : Color.BLACK);
+				setForeground(fg);
 				setText("");
 				setToolTipText(null);
 			}
