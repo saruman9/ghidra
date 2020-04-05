@@ -94,14 +94,14 @@ public class StackDepthFieldFactory extends FieldFactory {
 		// This can be used to display the value of any register symbolically flowing over the program.
 		// depthString = depth.getRegValueRepresentation(cu.getMinAddress(), cu.getProgram().getRegister("ESP"));
 
-		AttributedString as = new AttributedString(depthString, Color.BLUE, getMetrics());
+		AttributedString as = new AttributedString(depthString, color, getMetrics());
 
 		Integer overrideDepth =
 			CallDepthChangeInfo.getStackDepthChange(cu.getProgram(), cu.getMinAddress());
 		if (overrideDepth != null) {
 			String grows = (func.getStackFrame().growsNegative() ? " - " : " + ");
 			depthString = depthString + grows + Integer.toString(overrideDepth, 16);
-			as = new AttributedString(depthString, Color.RED, getMetrics());
+			as = new AttributedString(depthString, underlineColor, getMetrics());
 		}
 
 		FieldElement text = new TextFieldElement(as, 0, 0);
