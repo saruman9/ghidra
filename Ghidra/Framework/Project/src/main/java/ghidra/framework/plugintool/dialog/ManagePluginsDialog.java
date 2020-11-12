@@ -15,7 +15,6 @@
  */
 package ghidra.framework.plugintool.dialog;
 
-import java.awt.Color;
 import java.awt.Point;
 
 import javax.swing.*;
@@ -50,7 +49,6 @@ public class ManagePluginsDialog extends DialogComponentProvider implements Chan
 		ClassSearcher.addChangeListener(this);
 		comp = new PluginManagerComponent(tool);
 		JScrollPane scrollPane = new JScrollPane(comp);
-		scrollPane.getViewport().setBackground(Color.white);
 		scrollPane.getViewport().setViewPosition(new Point(0, 0));
 		addWorkPanel(scrollPane);
 		createActions(addSaveActions);

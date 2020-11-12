@@ -71,8 +71,8 @@ public class GhidraFileChooser extends DialogComponentProvider
 		implements GhidraFileChooserListener, FileFilter {
 
 	static final String UP_BUTTON_NAME = "UP_BUTTON";
-	private static final Color FOREROUND_COLOR = Color.BLACK;
-	private static final Color BACKGROUND_COLOR = Color.WHITE;
+	private static final Color FOREROUND_COLOR = Color.WHITE;
+	private static final Color BACKGROUND_COLOR = new Color(0x2b, 0x2b, 0x2b);
 	static final String PREFERENCES_PREFIX = "G_FILE_CHOOSER";
 	private static final String WIDTH_PREFERENCE_PREFIX = PREFERENCES_PREFIX + ".WIDTH.";
 	private static final String HEIGHT_PREFERENCE_PREFIX = PREFERENCES_PREFIX + ".HEIGHT.";

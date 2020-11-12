@@ -208,7 +208,7 @@ public class GraphComponent<V extends VisualVertex, E extends VisualEdge<V>, G e
 		renderContext.setVertexFillPaintTransformer(
 			new PickableVertexPaintTransformer<>(pickedVertexState, Color.WHITE, Color.YELLOW));
 
-		viewer.setBackground(Color.WHITE);
+		viewer.setBackground(new Color(0x2d, 0x2d, 0x2d));
 
 		viewer.setGraphOptions(new VisualGraphOptions());
 

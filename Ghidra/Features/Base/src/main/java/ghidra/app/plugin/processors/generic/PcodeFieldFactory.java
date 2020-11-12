@@ -179,7 +179,12 @@ public class PcodeFieldFactory extends FieldFactory {
 			options.getColor(OptionsGui.CONSTANT.getColorOptionName(),
 				OptionsGui.CONSTANT.getDefaultColor()),
 			options.getColor(OptionsGui.LABELS_LOCAL.getColorOptionName(),
-				OptionsGui.LABELS_LOCAL.getDefaultColor()));
+				OptionsGui.LABELS_LOCAL.getDefaultColor()),
+			options.getColor(OptionsGui.MNEMONIC.getColorOptionName(),
+							 OptionsGui.MNEMONIC.getDefaultColor()),
+			options.getColor(OptionsGui.COMMENT_EOL.getColorOptionName(),
+							 OptionsGui.COMMENT_EOL.getDefaultColor())
+		);
 		formatter.setFontMetrics(getMetrics());
 	}
 

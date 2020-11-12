@@ -412,7 +412,7 @@ class ExtensionTableModel extends ThreadedTableModel<ExtensionDetails, List<Exte
 			}
 			else {
 				if (isValidVersion(extension) || SystemUtilities.isInDevelopmentMode()) {
-					comp.setForeground(Color.BLACK);
+					comp.setForeground(new Color(0xc0, 0xc0, 0xc0));
 				}
 				else {
 					comp.setForeground(Color.RED);

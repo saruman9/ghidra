@@ -212,7 +212,7 @@ public class FGComponent extends GraphComponent<FGVertex, FGEdge, FunctionGraph>
 		// note: this label renderer is the stamp for the label; we use another edge label 
 		//       renderer inside of the VisualGraphRenderer
 		VisualGraphEdgeLabelRenderer edgeLabelRenderer =
-			new VisualGraphEdgeLabelRenderer(Color.BLACK);
+			new VisualGraphEdgeLabelRenderer(Color.WHITE);
 		edgeLabelRenderer.setNonPickedForegroundColor(Color.LIGHT_GRAY);
 		edgeLabelRenderer.setRotateEdgeLabels(false);
 		renderContext.setEdgeLabelRenderer(edgeLabelRenderer);
@@ -223,7 +223,7 @@ public class FGComponent extends GraphComponent<FGVertex, FGEdge, FunctionGraph>
 			viewer.setBackground(UNDEFINED_FUNCTION_COLOR);
 		}
 		else {
-			viewer.setBackground(Color.WHITE);
+			viewer.setBackground(new Color(0x6d, 0x6d, 0x6d));
 		}
 
 		return viewer;

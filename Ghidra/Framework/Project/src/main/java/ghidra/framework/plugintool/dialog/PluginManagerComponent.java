@@ -45,7 +45,6 @@ public class PluginManagerComponent extends JPanel implements ChangeListener, Sc
 	PluginManagerComponent(PluginTool tool) {
 		super(new VerticalLayout(2));
 		setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		setBackground(Color.WHITE);
 		this.tool = tool;
 		model = new PluginConfigurationModel(tool, this);
 		List<PluginPackage> pluginPackages = model.getPluginPackages();
@@ -77,13 +76,11 @@ public class PluginManagerComponent extends JPanel implements ChangeListener, Sc
 	}
 
 	private class PluginPackageComponent extends JPanel {
-		private final Color BG = Color.white;
 		private final PluginPackage pluginPackage;
 		private final GCheckBox checkBox;
 		
 		PluginPackageComponent(PluginPackage pluginPackage) {
 			super(new BorderLayout());
-			setBackground(BG);
 
 			this.pluginPackage = pluginPackage;
 			this.checkBox = new GCheckBox();
@@ -92,28 +89,25 @@ public class PluginManagerComponent extends JPanel implements ChangeListener, Sc
 			initializeLabelSection();
 			initializeDescriptionSection();
 
-			setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+			setBorder(BorderFactory.createLineBorder(new Color(0xc0, 0xc0, 0xc0)));
 			updateCheckBoxState();
 		}
 
 		private void initizalizeCheckBoxSection() {
 			final JPanel checkboxPanel = new JPanel(new HorizontalLayout(0));
-			checkboxPanel.setBackground(BG);
-			
+
 			checkBox.addActionListener(e -> checkBoxClicked());
 			if (!pluginPackage.isfullyAddable()) {
 				checkBox.setEnabled(false);
 			}
-			checkBox.setBackground(BG);
-			
+
 			checkboxPanel.add(Box.createHorizontalStrut(10));
 			checkboxPanel.add(checkBox);
 			checkboxPanel.add(Box.createHorizontalStrut(10));
 			
 			final JLabel iconLabel =
 				new GIconLabel(ResourceManager.getScaledIcon(pluginPackage.getIcon(), 32, 32, 32));
-			iconLabel.setBackground(BG);
-			
+
 			checkboxPanel.add(iconLabel);
 			checkboxPanel.add(Box.createHorizontalStrut(10));
 			checkboxPanel.setPreferredSize(new Dimension(84, 70));
@@ -127,14 +121,10 @@ public class PluginManagerComponent extends JPanel implements ChangeListener, Sc
 			gbc.fill = GridBagConstraints.HORIZONTAL;
 			gbc.weightx = 1.0;
 
-			centerPanel.setBackground(BG);
-			
 			final JPanel labelPanel = new JPanel(new VerticalLayout(3));
-			labelPanel.setBackground(BG);
-			
+
 			final GLabel nameLabel = new GLabel(pluginPackage.getName());
 			nameLabel.setFont(nameLabel.getFont().deriveFont(18f));
-			nameLabel.setForeground(Color.BLACK);
 			labelPanel.add(nameLabel);
 			
 			final HyperlinkComponent configureHyperlink = createConfigureHyperlink();
@@ -153,7 +143,6 @@ public class PluginManagerComponent extends JPanel implements ChangeListener, Sc
 						managePlugins(PluginPackageComponent.this.pluginPackage);
 					}
 				});
-				configureHyperlink.setBackground(BG);
 				return configureHyperlink;
 		}
 		
@@ -165,7 +154,6 @@ public class PluginManagerComponent extends JPanel implements ChangeListener, Sc
 			final String htmlDescription = enchanceDescription(pluginPackage.getDescription());
 			
 			final JLabel descriptionlabel = new GHtmlLabel(htmlDescription);
-			descriptionlabel.setForeground(Color.GRAY);
 			descriptionlabel.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
 			descriptionlabel.setVerticalAlignment(SwingConstants.TOP);
 			descriptionlabel.setToolTipText(

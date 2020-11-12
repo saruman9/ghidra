@@ -118,7 +118,6 @@ public abstract class AbstractDetailsPanel extends JPanel {
 
 		textLabel.setVerticalAlignment(SwingConstants.TOP);
 		textLabel.setOpaque(true);
-		textLabel.setBackground(Color.WHITE);
 		sp = new JScrollPane(textLabel);
 		sp.getVerticalScrollBar().setUnitIncrement(10);
 		sp.setPreferredSize(new Dimension(MIN_WIDTH, 200));

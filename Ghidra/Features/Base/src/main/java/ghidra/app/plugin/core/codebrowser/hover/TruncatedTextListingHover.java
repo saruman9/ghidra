@@ -31,6 +31,8 @@ import ghidra.program.util.ProgramLocation;
 import ghidra.util.HTMLUtilities;
 import ghidra.util.HelpLocation;
 
+import java.awt.Color;
+
 /**
  * A hover service to show tool tip text for hovering over a truncated field, containing a "...",
  * in the listing.
@@ -62,6 +64,7 @@ public class TruncatedTextListingHover extends AbstractTruncatedTextHover
 			String text = field.getTextWithLineSeparators();
 			String convertToHtml = HTMLUtilities.toLiteralHTMLForTooltip(text);
 			JToolTip toolTip = new JToolTip();
+			toolTip.setBackground(new Color(0x2d, 0x2d, 0x2d));
 			toolTip.setTipText(convertToHtml);
 			return toolTip;
 		}

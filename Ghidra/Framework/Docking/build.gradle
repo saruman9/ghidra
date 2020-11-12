@@ -8,6 +8,7 @@ eclipse.project.name = 'Framework Docking'
 
 dependencies {
 	compile project(':Generic')
+	compile ':darcula-laf:2019.09'
 	compile 'net.java.dev.timingframework:timingframework:1.0'
 	
 	// Only include this debug version of the jh library if necessary.

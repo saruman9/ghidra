@@ -266,7 +266,7 @@ public class ByteViewerOptionsDialog extends DialogComponentProvider
 			JCheckBox checkBox = entry.getValue();
 			DataFormatModel model = provider.getDataFormatModel(entry.getKey());
 			if (model.validateBytesPerLine(bytesPerLine)) {
-				checkBox.setForeground(Color.BLACK);
+				checkBox.setForeground(new Color(0xb4, 0xb4, 0xb4));
 			}
 			else {
 				checkBox.setForeground(Color.RED);

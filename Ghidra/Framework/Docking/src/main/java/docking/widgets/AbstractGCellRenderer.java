@@ -32,7 +32,8 @@ import docking.widgets.label.GDHtmlLabel;
  */
 public abstract class AbstractGCellRenderer extends GDHtmlLabel {
 
-	private static final Color ALTERNATE_BACKGROUND_COLOR = new Color(237, 243, 254);
+	private static final Color ALTERNATE_BACKGROUND_COLOR = new Color(0x32, 0x32, 0x32);
+	private static final Color REGULAR_BACKGROUND_COLOR = new Color(0x2b, 0x2b, 0x2b);
 
 	/** Allows the user to disable alternating row colors on JLists and JTables */
 	private static final String DISABLE_ALTERNATING_ROW_COLORS_PROPERTY =
@@ -156,7 +157,7 @@ public abstract class AbstractGCellRenderer extends GDHtmlLabel {
 	}
 
 	protected Color getDefaultBackgroundColor() {
-		return Color.WHITE;
+		return REGULAR_BACKGROUND_COLOR;
 	}
 
 	protected Color getBackgroundColorForRow(int row) {

@@ -41,7 +41,7 @@ import ghidra.program.model.symbol.Symbol;
  */
 public class ToolTipUtils {
 
-	private static Color PARAM_NAME_COLOR = new Color(155, 50, 155);
+	private static Color PARAM_NAME_COLOR = new Color(0xff, 0xd2, 0x00);
 	private static Color PARAM_CUSTOM_STORAGE_COLOR = OptionsGui.PARAMETER_CUSTOM.getDefaultColor();
 	private static Color PARAM_DYNAMIC_STORAGE_COLOR =
 		OptionsGui.PARAMETER_DYNAMIC.getDefaultColor();
@@ -135,7 +135,7 @@ public class ToolTipUtils {
 			dt = DataType.DEFAULT;
 		}
 
-		buf.append(colorString(Color.BLACK, friendlyEncodeHTML(dt.getName())));
+		buf.append(colorString(new Color(0xc0, 0xc0, 0xc0), friendlyEncodeHTML(dt.getName())));
 		buf.append(HTML_SPACE);
 		buf.append(friendlyEncodeHTML(s.getName()));
 
@@ -201,7 +201,7 @@ public class ToolTipUtils {
 		StringBuilder buf = new StringBuilder();
 		buf.append("<tr><td width=10>&nbsp;</td>"); // indent
 		buf.append("<td width=\"1%\">");
-		buf.append(colorString(Color.BLACK, friendlyEncodeHTML(param.getDataType().getName())));
+		buf.append(colorString(new Color(0xc0, 0xc0, 0xc0), friendlyEncodeHTML(param.getDataType().getName())));
 		buf.append("</td><td width=\"1%\">");
 		Color paramColor =
 			param.getFunction().hasCustomVariableStorage() ? PARAM_CUSTOM_STORAGE_COLOR
@@ -238,7 +238,7 @@ public class ToolTipUtils {
 			buf.append(friendlyEncodeHTML(callingConvention.getName()));
 			buf.append(HTML_SPACE);
 		}
-		buf.append(colorString(Color.BLUE, friendlyEncodeHTML(function.getName())));
+		buf.append(colorString(new Color(0x43, 0x57, 0xad), friendlyEncodeHTML(function.getName())));
 		buf.append(HTML_SPACE).append("(");
 
 		buildParameterPreview(function, buf);
@@ -262,7 +262,7 @@ public class ToolTipUtils {
 		for (Parameter param : parameters) {
 			StringBuilder pb = new StringBuilder();
 			String type = param.getDataType().getName();
-			pb.append(colorString(Color.BLACK, friendlyEncodeHTML(type)));
+			pb.append(colorString(new Color(0xc0, 0xc0, 0xc0), friendlyEncodeHTML(type)));
 			pb.append(HTML_SPACE);
 
 			String name = param.getName();

@@ -38,10 +38,10 @@ import resources.icons.TranslateIcon;
 public class GTableHeaderRenderer extends JPanel implements TableCellRenderer {
 	private static final int PADDING_FOR_COLUMN_NUMBER = 10;
 
-	private static final Color PRIMARY_SORT_GRADIENT_START = new Color(205, 227, 244);
-	private static final Color PRIMARY_SORT_GRADIENT_END = new Color(126, 186, 233);
-	private static final Color DEFAULT_GRADIENT_START = Color.WHITE;
-	private static final Color DEFAULT_GRADIENT_END = new Color(215, 215, 215);
+	private static final Color PRIMARY_SORT_GRADIENT_START = new Color(0x5B, 0x67, 0x74);
+	private static final Color PRIMARY_SORT_GRADIENT_END = new Color(0x52, 0x52, 0x52);
+	private static final Color DEFAULT_GRADIENT_START = new Color(0x3B, 0x47, 0x54);
+	private static final Color DEFAULT_GRADIENT_END = new Color(0x32, 0x32, 0x32);
 
 	private static final Icon UP_ICON =
 		ResourceManager.getScaledIcon(Icons.SORT_ASCENDING_ICON, 14, 14);

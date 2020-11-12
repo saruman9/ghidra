@@ -15,9 +15,6 @@
  */
 package ghidra.app.plugin.core.function.editor;
 
-import static java.awt.Color.blue;
-import static java.awt.Color.red;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -34,10 +31,10 @@ class FunctionSignatureTextField extends JTextPane {
 	private static final String ENTER_ACTION_NAME = "ENTER";
 	private static final String ESCAPE_ACTION_NAME = "ESCAPE";
 	private static final String TAB_ACTION_NAME = "TAB";
-	public static Color DEFAULT_COLOR = Color.black;
-	public static Color PARAMETER_NAME_COLOR = new Color(155, 50, 155);
-	public static Color FUNCTION_NAME_COLOR = blue;
-	public static Color ERROR_NAME_COLOR = red;
+	public static Color DEFAULT_COLOR = new Color(0xc0, 0xc0, 0xc0);
+	public static Color PARAMETER_NAME_COLOR = new Color(0xff, 0x80, 0x00);
+	public static Color FUNCTION_NAME_COLOR = new Color(0xff, 0xd2, 0x00);
+	public static Color ERROR_NAME_COLOR = Color.RED;
 
 	private StyledDocument doc;
 	private SimpleAttributeSet paramNameAttributes;

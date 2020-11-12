@@ -41,7 +41,7 @@ import ghidra.program.util.ProgramLocation;
 public class MemoryBlockStartFieldFactory extends FieldFactory {
 
 	private static final String FIELD_NAME = "Memory Block Start";
-	private static final Color BLOCK_COLOR = new Color(75, 0, 130);
+	private static final Color BLOCK_COLOR = new Color(0x43, 0x57, 0xad);
 
 	/**
 	 * Constructor

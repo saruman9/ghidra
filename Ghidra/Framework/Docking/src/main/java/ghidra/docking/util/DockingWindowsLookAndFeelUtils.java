@@ -24,6 +24,8 @@ import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.plaf.ComponentUI;
 
+import com.bulenkov.darcula.DarculaLaf;
+
 import ghidra.docking.util.painting.GRepaintManager;
 import ghidra.framework.OperatingSystem;
 import ghidra.framework.Platform;
@@ -59,6 +61,11 @@ public class DockingWindowsLookAndFeelUtils {
 	 * The most stable Linux LaF.
 	 */
 	private static final String NIMBUS_LOOK_AND_FEEL = "Nimbus";
+
+	/**
+	 * Dark theme Darcula
+	 */
+	private static final String DARCULA_LOOK_AND_FEEL = "Darcula";
 
 	private static RepaintManager defaultSwingRepaintManager = null;
 
@@ -145,6 +152,7 @@ public class DockingWindowsLookAndFeelUtils {
 	public static List<String> getLookAndFeelNames() {
 		List<String> list = new ArrayList<>();
 		list.add(DockingWindowsLookAndFeelUtils.SYSTEM_LOOK_AND_FEEL);
+		list.add(DockingWindowsLookAndFeelUtils.DARCULA_LOOK_AND_FEEL);
 
 		LookAndFeelInfo[] installedLookAndFeels = UIManager.getInstalledLookAndFeels();
 		for (LookAndFeelInfo info : installedLookAndFeels) {
@@ -165,6 +173,9 @@ public class DockingWindowsLookAndFeelUtils {
 	private static String findLookAndFeelClassName(String lookAndFeelName) {
 		if (lookAndFeelName.equalsIgnoreCase(SYSTEM_LOOK_AND_FEEL)) {
 			return UIManager.getSystemLookAndFeelClassName();
+		}
+		if (lookAndFeelName.equalsIgnoreCase(DARCULA_LOOK_AND_FEEL)) {
+			return DarculaLaf.class.getName();
 		}
 
 		LookAndFeelInfo[] installedLookAndFeels = UIManager.getInstalledLookAndFeels();
