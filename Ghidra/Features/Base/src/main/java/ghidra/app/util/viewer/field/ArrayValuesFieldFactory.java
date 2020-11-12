@@ -15,6 +15,7 @@
  */
 package ghidra.app.util.viewer.field;
 
+import java.awt.Color;
 import java.beans.PropertyEditor;
 import java.math.BigInteger;
 
@@ -24,6 +25,7 @@ import docking.widgets.fieldpanel.support.RowColLocation;
 import ghidra.app.util.HighlightProvider;
 import ghidra.app.util.viewer.format.FieldFormatModel;
 import ghidra.app.util.viewer.format.FormatManager;
+import ghidra.app.util.viewer.options.OptionsGui;
 import ghidra.app.util.viewer.proxy.ProxyObj;
 import ghidra.framework.options.*;
 import ghidra.program.model.data.DataType;
@@ -180,6 +182,11 @@ public class ArrayValuesFieldFactory extends FieldFactory {
 			ArrayElementWrappedOption arrayElementOption = (ArrayElementWrappedOption) customOption;
 			valuesPerLine = arrayElementOption.getArrayElementsPerLine();
 		}
+	}
+
+	@Override
+	public Color getDefaultColor() {
+		return OptionsGui.ARRAY_VALUES.getDefaultColor();
 	}
 
 }

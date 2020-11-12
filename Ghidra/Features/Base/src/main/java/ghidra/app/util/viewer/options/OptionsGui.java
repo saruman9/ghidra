@@ -53,6 +53,7 @@ public class OptionsGui extends JPanel {
 			new ScreenElement("Comment, Automatic", Color.LIGHT_GRAY);
 	public static final ScreenElement ADDRESS = new ScreenElement("Address",
 																  new Color(0x66, 0x66, 0x66));
+    public static final ScreenElement ARRAY_VALUES = new ScreenElement("Array Values", Color.WHITE);
 	public static final ScreenElement BACKGROUND = new ScreenElement("Background",
 																	 new Color(0x2d, 0x2d, 0x2d));
 	public static final ScreenElement BAD_REF_ADDR = new ScreenElement("Bad Reference Address",
@@ -151,8 +152,8 @@ public class OptionsGui extends JPanel {
 	public static final ScreenElement UNDERLINE = new ScreenElement("Underline",
 																	new Color(0xcc, 0x66, 0xff));
 
-	static ScreenElement[] elements = { ADDRESS, BACKGROUND, BAD_REF_ADDR, BYTES, COMMENT_AUTO,
-		COMMENT_EOL, COMMENT_PLATE, COMMENT_POST, COMMENT_PRE, COMMENT_REPEATABLE,
+	static ScreenElement[] elements = { ADDRESS, ARRAY_VALUES, BACKGROUND, BAD_REF_ADDR, BYTES,
+		COMMENT_AUTO, COMMENT_EOL, COMMENT_PLATE, COMMENT_POST, COMMENT_PRE, COMMENT_REPEATABLE,
 		COMMENT_REF_REPEAT, CONSTANT, ENTRY_POINT, EXT_REF_RESOLVED, FIELD_NAME, FLOW_ARROW_ACTIVE,
 		FLOW_ARROW_NON_ACTIVE, FUN_CALL_FIXUP, FUN_NAME, FUN_PARAMS, FUN_AUTO_PARAMS, FUN_RET_TYPE,
 		FUN_TAG, LABELS_LOCAL, LABELS_NON_PRIMARY, LABELS_PRIMARY, LABELS_UNREFD, MNEMONIC,
@@ -730,6 +731,18 @@ public class OptionsGui extends JPanel {
 		lb.add("mov    ", MNEMONIC);
 		lb.add("DAT0000", BAD_REF_ADDR);
 		lb.add("        ", null);
+		list.add(lb.getLayout());
+
+		lb = new LayoutBuilder(3);
+		lb.add("2009", ADDRESS);
+		lb.add(" [0x0]         ", FIELD_NAME);
+		lb.add("           0h,       10000h,       10001h,        20002h,", ARRAY_VALUES);
+		list.add(lb.getLayout());
+
+		lb = new LayoutBuilder(3);
+		lb.add("2019", ADDRESS);
+		lb.add(" [0x4]         ", FIELD_NAME);
+		lb.add("    DEADBEEFh", ARRAY_VALUES);
 		list.add(lb.getLayout());
 
 		layouts = new Layout[list.size()];
