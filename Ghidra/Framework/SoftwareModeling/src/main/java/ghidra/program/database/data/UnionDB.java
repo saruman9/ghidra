@@ -277,8 +277,7 @@ class UnionDB extends CompositeDB implements Union {
 		int oldLength = unionLength;
 		int oldMinAlignment = getMinimumAlignment();
 
-		for (int i = 0; i < components.size(); i++) {
-			DataTypeComponentDB dtc = components.get(i);
+		for (DataTypeComponentDB dtc : components) {
 			dtc.getDataType().removeParent(this);
 			removeComponent(dtc.getKey());
 		}
@@ -419,24 +418,56 @@ class UnionDB extends CompositeDB implements Union {
 
 	@Override
 	public void dataTypeSizeChanged(DataType dt) {
+		if (dt instanceof BitFieldDataType) {
+			return; // unsupported
+		}
 		lock.acquire();
 		try {
 			checkDeleted();
 			boolean changed = false;
 			for (DataTypeComponentDB dtc : components) {
-				int length = dtc.getLength();
 				if (dtc.getDataType() == dt) {
-					length = getPreferredComponentLength(dt, length);
+					int length = dt.getLength();
+					if (length <= 0) {
+						length = dtc.getLength();
+					}
 					dtc.setLength(length, true);
 					changed = true;
 				}
 			}
 			if (changed) {
-				adjustLength(true, false);
+				adjustLength(true, false);  // notifies parents
 			}
 		}
 		finally {
 			lock.release();
+		}
+	}
+
+	@Override
+	protected void fixupComponents() {
+		boolean changed = false;
+		for (DataTypeComponentDB dtc : components) {
+			DataType dt = dtc.getDataType();
+			if (dt instanceof BitFieldDataType) {
+				dt = adjustBitField(dt); // in case base type changed
+			}
+			int dtcLen = dtc.getLength();
+			int length = dt.getLength();
+			if (length <= 0) {
+				length = dtcLen;
+			}
+			if (length != dtcLen) {
+				dtc.setLength(length, true);
+				changed = true;
+			}
+		}
+		if (changed || isInternallyAligned()) {
+			// NOTE: since we do not retain our external alignment we have no way of knowing if
+			// it has changed, so we must assume it has if we are an aligned union
+			// Do not notify parents
+			adjustLength(false, false);
+			dataMgr.dataTypeChanged(this);
 		}
 	}
 
@@ -614,7 +645,9 @@ class UnionDB extends CompositeDB implements Union {
 			catch (IOException e) {
 				dataMgr.dbError(e);
 			}
-			notifySizeChanged();
+			if (notify) {
+				notifySizeChanged();
+			}
 		}
 		else if (notify) {
 			dataMgr.dataTypeChanged(this);
