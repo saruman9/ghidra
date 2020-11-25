@@ -13,27 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package help;
+package ghidra.app.plugin.core.clipboard;
 
-import java.util.Map;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-import help.validator.model.TOCItemDefinition;
-import help.validator.model.TOCItemExternal;
+import ghidra.app.plugin.core.byteviewer.ByteViewerClipboardProviderTest;
 
-/**
- * An interface that allows us to perform dependency injection in the testing environment
- */
-public interface TOCItemProvider {
-
-	/**
-	 * Returns all external TOC items referenced by this provider
-	 * @return the items
-	 */
-	public Map<String, TOCItemExternal> getExternalTocItemsById();
-
-	/**
-	 * Returns all TOC items defined by this provider
-	 * @return the items
-	 */
-	public Map<String, TOCItemDefinition> getTocDefinitionsByID();
+//@formatter:off
+@RunWith(Suite.class)
+@SuiteClasses({
+	ClipboardPluginTest.class,
+	ByteViewerClipboardProviderTest.class,
+	CodeBrowserClipboardProviderTest.class,
+	CopyPasteCommentsTest.class, 
+	CopyPasteFunctionInfoTest.class
+})
+public class CopyPasteTestSuite {
+	// in the annotation
 }
+//@formatter:on
