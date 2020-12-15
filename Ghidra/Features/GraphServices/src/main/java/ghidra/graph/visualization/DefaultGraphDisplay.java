@@ -431,7 +431,7 @@ public class DefaultGraphDisplay implements GraphDisplay {
 				.popupMenuGroup("z", "5")
 				.keyBinding("escape")
 				.enabledWhen(c -> hasSelection())
-				.onAction(c -> clearSelection())
+				.onAction(c -> clearSelection(true))
 				.buildAndInstallLocal(componentProvider);
 
 		new ActionBuilder("Create Subgraph", ACTION_OWNER)
@@ -499,9 +499,9 @@ public class DefaultGraphDisplay implements GraphDisplay {
 		}
 	}
 
-	private void clearSelection() {
-		viewer.getSelectedVertexState().clear();
-		viewer.getSelectedEdgeState().clear();
+	private void clearSelection(boolean fireEvents) {
+		viewer.getSelectedVertexState().clear(fireEvents);
+		viewer.getSelectedEdgeState().clear(fireEvents);
 	}
 
 	private boolean hasSelection() {
@@ -666,6 +666,9 @@ public class DefaultGraphDisplay implements GraphDisplay {
 		satellite.getRenderContext().setVertexFillPaintFunction(Colors::getColor);
 		satellite.scaleToLayout();
 		satellite.getRenderContext().setVertexLabelFunction(n -> null);
+		// always get the current predicate from the main view and test with it,
+		satellite.getRenderContext()
+				.setVertexIncludePredicate(v -> viewer.getRenderContext().getVertexIncludePredicate().test(v));
 		satellite.getComponent().setBorder(BorderFactory.createEtchedBorder());
 		parentViewer.getComponent().addComponentListener(new ComponentAdapter() {
 			@Override
@@ -816,6 +819,8 @@ public class DefaultGraphDisplay implements GraphDisplay {
 	 * @param attributedGraph the {@link AttributedGraph} to visualize
 	 */
 	private void doSetGraphData(AttributedGraph attributedGraph) {
+		clearSelection(false);
+		focusedVertex = null;
 		graph = attributedGraph;
 
 		layoutTransitionManager.setEdgeComparator(new EdgeComparator(graph, "EdgeType",
@@ -871,7 +876,7 @@ public class DefaultGraphDisplay implements GraphDisplay {
 			viewer.getRenderContext()
 					.setVertexIncludePredicate(
 						v -> v.getAttributeMap().values().stream().noneMatch(selected::contains));
-			viewer.repaint();
+
 		});
 
 		edgeFilters = AttributeFilters.builder()
