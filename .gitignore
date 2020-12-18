@@ -88,4 +88,6 @@ gradle/wrapper
 gradlew
 gradlew.*
 
-
+# Ignore logs and core dumps
+*.log
+core.*
