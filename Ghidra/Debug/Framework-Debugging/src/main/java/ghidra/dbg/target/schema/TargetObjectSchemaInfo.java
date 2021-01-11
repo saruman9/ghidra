@@ -13,22 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package agent.gdb.manager.impl;
+package ghidra.dbg.target.schema;
 
-import java.io.IOException;
-import java.util.concurrent.CompletableFuture;
+import java.lang.annotation.*;
 
-import agent.gdb.manager.GdbManager;
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface TargetObjectSchemaInfo {
+	String name() default "";
 
-public class SpawnedGdbManagerTest extends AbstractGdbManagerTest {
-	@Override
-	protected CompletableFuture<Void> startManager(GdbManager manager) {
-		try {
-			manager.start();
-			return manager.runRC();
-		}
-		catch (IOException e) {
-			throw new AssertionError(e);
-		}
-	}
+	boolean canonicalContainer() default false;
+
+	TargetElementType[] elements() default {};
+
+	TargetAttributeType[] attributes() default {};
 }

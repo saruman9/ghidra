@@ -27,7 +27,6 @@ import org.python.core.PyDictionary;
 import org.python.util.InteractiveConsole;
 
 import agent.gdb.ffi.linux.Pty;
-import agent.gdb.ffi.linux.PtyMaster;
 import agent.gdb.manager.*;
 import agent.gdb.manager.GdbCause.Causes;
 import agent.gdb.manager.breakpoint.GdbBreakpointInfo;
@@ -37,6 +36,7 @@ import agent.gdb.manager.impl.cmd.*;
 import agent.gdb.manager.parsing.GdbMiParser;
 import agent.gdb.manager.parsing.GdbParsingUtils.GdbParseError;
 import ghidra.async.*;
+import ghidra.dbg.error.DebuggerModelTerminatingException;
 import ghidra.dbg.util.HandlerMap;
 import ghidra.dbg.util.PrefixMap;
 import ghidra.lifecycle.Internal;
@@ -87,6 +87,60 @@ public class GdbManagerImpl implements GdbManager {
 	public static final int INTERRUPT_MAX_RETRIES = 3;
 	public static final int INTERRUPT_RETRY_PERIOD_MILLIS = 100;
 
+	class PtyThread extends Thread {
+		final Pty pty;
+		final BufferedReader reader;
+		final Channel channel;
+
+		Interpreter interpreter;
+		PrintWriter writer;
+		CompletableFuture<Void> hasWriter;
+
+		PtyThread(Pty pty, Channel channel, Interpreter interpreter) {
+			this.pty = pty;
+			this.channel = channel;
+			this.reader =
+				new BufferedReader(new InputStreamReader(pty.getMaster().getInputStream()));
+			this.interpreter = interpreter;
+			hasWriter = new CompletableFuture<>();
+		}
+
+		@Override
+		public void run() {
+			try {
+				String line;
+				while (isAlive() && null != (line = reader.readLine())) {
+					String l = line;
+					if (interpreter == null) {
+						if (l.startsWith("=") || l.startsWith("~")) {
+							interpreter = Interpreter.MI2;
+						}
+						else {
+							interpreter = Interpreter.CLI;
+						}
+					}
+					if (writer == null) {
+						writer = new PrintWriter(pty.getMaster().getOutputStream());
+						hasWriter.complete(null);
+					}
+					//Msg.debug(this, channel + ": " + line);
+					submit(() -> {
+						if (LOG_IO) {
+							DBG_LOG.println("<" + interpreter + ": " + l);
+							DBG_LOG.flush();
+						}
+						processLine(l, channel, interpreter);
+					});
+				}
+			}
+			catch (Throwable e) {
+				terminate();
+				Msg.debug(this, channel + "," + interpreter + " reader exiting because " + e);
+				//throw new AssertionError(e);
+			}
+		}
+	}
+
 	private final AsyncReference<GdbState, GdbCause> state =
 		new AsyncReference<>(GdbState.NOT_STARTED);
 	// A copy of state, which is updated on the eventThread.
@@ -98,15 +152,12 @@ public class GdbManagerImpl implements GdbManager {
 	private final HandlerMap<GdbEvent<?>, Void, Void> handlerMap = new HandlerMap<>();
 	private final AtomicBoolean exited = new AtomicBoolean(false);
 
-	private Pty cliPty;
-	private Pty mi2Pty;
 	private Process gdb;
 	private Thread gdbWaiter;
 
-	private Thread cliReader;
-	private Thread mi2Reader;
-	private PrintWriter cliWriter;
-	private PrintWriter mi2Writer;
+	private PtyThread iniThread;
+	private PtyThread cliThread;
+	private PtyThread mi2Thread;
 
 	private final AsyncLock cmdLock = new AsyncLock();
 	private final AtomicReference<AsyncLock.Hold> cmdLockHold = new AtomicReference<>(null);
@@ -500,41 +551,50 @@ public class GdbManagerImpl implements GdbManager {
 		state.set(GdbState.STARTING, Causes.UNCLAIMED);
 		executor = Executors.newSingleThreadExecutor();
 
-		mi2Pty = Pty.openpty();
 		if (gdbCmd != null) {
-			cliPty = Pty.openpty();
+			iniThread = new PtyThread(Pty.openpty(), Channel.STDOUT, null);
+			gdb = iniThread.pty.getSlave().session(fullargs.toArray(new String[] {}), null);
+			iniThread.start();
 			try {
-				gdb = cliPty.getSlave().session(fullargs.toArray(new String[] {}), null);
+				iniThread.hasWriter.get(10, TimeUnit.SECONDS);
 			}
-			catch (IOException e) {
-				// TODO: Seems I should declare this, but it makes client code ugly :(
-				throw new RuntimeException(e);
+			catch (InterruptedException | ExecutionException | TimeoutException e) {
+				throw new IOException("Could not detect GDB's interpreter mode");
 			}
+			switch (iniThread.interpreter) {
+				case CLI:
+					cliThread = iniThread;
+					cliThread.setName("GDB Read CLI");
 
-			PtyMaster cliMaster = cliPty.getMaster();
-			cliReader = new Thread(
-				() -> readStream(cliMaster.getInputStream(), Channel.STDOUT, Interpreter.CLI),
-				"GDB Read CLI");
-			cliReader.start();
-			cliWriter = new PrintWriter(cliMaster.getOutputStream());
+					mi2Thread = new PtyThread(Pty.openpty(), Channel.STDOUT, Interpreter.MI2);
+					mi2Thread.setName("GDB Read MI2");
+					mi2Thread.start();
+					cliThread.writer.println("new-ui mi2 " + mi2Thread.pty.getSlave().getFile());
+					cliThread.writer.flush();
+					try {
+						mi2Thread.hasWriter.get(2, TimeUnit.SECONDS);
+					}
+					catch (InterruptedException | ExecutionException | TimeoutException e) {
+						throw new IOException(
+							"Could not obtain GDB/MI2 interpreter. Try " + gdbCmd + " -i mi2");
+					}
+					break;
+				case MI2:
+					mi2Thread = iniThread;
+					mi2Thread.setName("GDB Read MI2");
+					break;
+			}
 
 			gdbWaiter = new Thread(this::waitGdbExit, "GDB WaitExit");
 			gdbWaiter.start();
-
-			cliWriter.println("new-ui mi2 " + mi2Pty.getSlave().getFile());
-			cliWriter.flush();
 		}
 		else {
-			System.out.println(
-				"Agent is waiting for GDB/MI v2 interpreter at " + mi2Pty.getSlave().getFile());
+			mi2Thread = new PtyThread(Pty.openpty(), Channel.STDOUT, Interpreter.MI2);
+			mi2Thread.setName("GDB Read MI2");
+			Msg.info(this, "Agent is waiting for GDB/MI v2 interpreter at " +
+				mi2Thread.pty.getSlave().getFile());
+			mi2Thread.start();
 		}
-
-		PtyMaster mi2Master = mi2Pty.getMaster();
-		mi2Reader = new Thread(
-			() -> readStream(mi2Master.getInputStream(), Channel.STDOUT, Interpreter.MI2),
-			"GDB Read MI2");
-		mi2Reader.start();
-		mi2Writer = new PrintWriter(mi2Master.getOutputStream());
 	}
 
 	@Override
@@ -568,61 +628,42 @@ public class GdbManagerImpl implements GdbManager {
 		}
 	}
 
-	private void readStream(InputStream in, Channel channel, Interpreter interpreter) {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-		try {
-			String line;
-			while (isAlive() && null != (line = reader.readLine())) {
-				String l = line;
-				//Msg.debug(this, channel + ": " + line);
-				submit(() -> {
-					if (LOG_IO) {
-						DBG_LOG.println("<" + interpreter + ": " + l);
-						DBG_LOG.flush();
-					}
-					processLine(l, channel, interpreter);
-				});
-			}
-		}
-		catch (Throwable e) {
-			terminate();
-			Msg.debug(this, channel + "," + interpreter + " reader exiting because " + e);
-			//throw new AssertionError(e);
-		}
-	}
-
 	@Override
 	public synchronized void terminate() {
 		Msg.debug(this, "Terminating " + this);
 		checkStarted();
 		exited.set(true);
 		executor.shutdownNow();
-		if (cliPty != null) {
+		if (gdbWaiter != null) {
 			gdbWaiter.interrupt();
-			cliReader.interrupt();
 		}
-		mi2Reader.interrupt();
+		try {
+			if (cliThread != null) {
+				cliThread.interrupt();
+				cliThread.pty.close();
+			}
+			if (mi2Thread != null) {
+				mi2Thread.interrupt();
+				mi2Thread.pty.close();
+			}
+		}
+		catch (IOException e) {
+			Msg.error(this, "Problem closing PTYs to GDB.");
+		}
 		if (gdb != null) {
 			gdb.destroyForcibly();
 		}
-		try {
-			if (cliPty != null) {
-				cliPty.close();
-			}
-			mi2Pty.close();
-		}
-		catch (IOException e) {
-			throw new AssertionError(e);
-		}
-		cmdLock.dispose("GDB is terminating");
-		state.dispose("GDB is terminating");
-		mi2Prompt.dispose("GDB is terminating");
+		DebuggerModelTerminatingException reason =
+			new DebuggerModelTerminatingException("GDB is terminating");
+		cmdLock.dispose(reason);
+		state.dispose(reason);
+		mi2Prompt.dispose(reason);
 		for (GdbThreadImpl thread : threads.values()) {
-			thread.dispose("GDB is terminating");
+			thread.dispose(reason);
 		}
 		GdbPendingCommand<?> cc = this.curCmd; // read volatile
 		if (cc != null && !cc.isDone()) {
-			cc.completeExceptionally(new IllegalStateException("GDB is terminating"));
+			cc.completeExceptionally(reason);
 		}
 	}
 
@@ -679,9 +720,9 @@ public class GdbManagerImpl implements GdbManager {
 	protected PrintWriter getWriter(Interpreter interpreter) {
 		switch (interpreter) {
 			case CLI:
-				return cliWriter;
+				return cliThread == null ? null : cliThread.writer;
 			case MI2:
-				return mi2Writer;
+				return mi2Thread == null ? null : mi2Thread.writer;
 			default:
 				throw new AssertionError();
 		}
@@ -790,7 +831,7 @@ public class GdbManagerImpl implements GdbManager {
 	 */
 	protected void processStdOut(GdbConsoleOutputEvent evt, Void v) {
 		String out = evt.getOutput();
-		System.out.print(out);
+		//System.out.print(out);
 		if (!evt.isStolen()) {
 			listenersConsoleOutput.fire.output(Channel.STDOUT, out);
 		}
@@ -820,7 +861,7 @@ public class GdbManagerImpl implements GdbManager {
 	 */
 	protected void processStdErr(GdbDebugOutputEvent evt, Void v) {
 		String out = evt.getOutput();
-		System.err.print(out);
+		//System.err.print(out);
 		if (!evt.isStolen()) {
 			listenersConsoleOutput.fire.output(Channel.STDERR, out);
 		}
@@ -1379,14 +1420,16 @@ public class GdbManagerImpl implements GdbManager {
 	public void sendInterruptNow() throws IOException {
 		checkStarted();
 		Msg.info(this, "Interrupting");
-		if (hasCli()) {
-			OutputStream os = cliPty.getMaster().getOutputStream();
+		if (cliThread != null) {
+			OutputStream os = cliThread.pty.getMaster().getOutputStream();
 			os.write(3);
 			os.flush();
 		}
-		OutputStream os = mi2Pty.getMaster().getOutputStream();
-		os.write(3);
-		os.flush();
+		if (mi2Thread != null) {
+			OutputStream os = mi2Thread.pty.getMaster().getOutputStream();
+			os.write(3);
+			os.flush();
+		}
 	}
 
 	@Override
@@ -1488,11 +1531,11 @@ public class GdbManagerImpl implements GdbManager {
 
 	@Override
 	public String getMi2PtyName() {
-		return mi2Pty.getSlave().getFile().getAbsolutePath();
+		return mi2Thread.pty.getSlave().getFile().getAbsolutePath();
 	}
 
 	public boolean hasCli() {
-		return cliWriter != null;
+		return cliThread != null && cliThread.pty != null;
 	}
 
 	public Interpreter getRunningInterpreter() {

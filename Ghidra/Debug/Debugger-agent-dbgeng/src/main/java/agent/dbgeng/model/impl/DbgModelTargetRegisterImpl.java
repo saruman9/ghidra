@@ -20,9 +20,15 @@ import java.util.Map;
 
 import agent.dbgeng.manager.impl.DbgRegister;
 import agent.dbgeng.model.iface2.DbgModelTargetRegister;
-import agent.dbgeng.model.iface2.DbgModelTargetRegisterContainer;
+import agent.dbgeng.model.iface2.DbgModelTargetRegisterContainerAndBank;
+import ghidra.dbg.target.schema.*;
 import ghidra.dbg.util.PathUtils;
 
+@TargetObjectSchemaInfo(name = "RegisterDescriptor", elements = { //
+	@TargetElementType(type = Void.class) //
+}, attributes = { //
+	@TargetAttributeType(type = Void.class) //
+})
 public class DbgModelTargetRegisterImpl extends DbgModelTargetObjectImpl
 		implements DbgModelTargetRegister {
 
@@ -38,12 +44,12 @@ public class DbgModelTargetRegisterImpl extends DbgModelTargetObjectImpl
 		return PathUtils.makeKey(indexRegister(register));
 	}
 
-	protected final DbgModelTargetRegisterContainer registers;
+	protected final DbgModelTargetRegisterContainerAndBank registers;
 	protected final DbgRegister register;
 
 	protected final int bitLength;
 
-	public DbgModelTargetRegisterImpl(DbgModelTargetRegisterContainer registers,
+	public DbgModelTargetRegisterImpl(DbgModelTargetRegisterContainerAndBank registers,
 			DbgRegister register) {
 		super(registers.getModel(), registers, keyRegister(register), "Register");
 		this.registers = registers;

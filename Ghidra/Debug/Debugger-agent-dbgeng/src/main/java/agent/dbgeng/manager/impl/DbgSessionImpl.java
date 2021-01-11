@@ -81,8 +81,10 @@ public class DbgSessionImpl implements DbgSession {
 	 * 
 	 * @param cause the cause of the new inferior
 	 */
-	public void add(DbgCause cause) {
-		manager.addSession(this, cause);
+	public void add() {
+		manager.sessions.put(id, this);
+		manager.getEventListeners().fire.sessionAdded(this, DbgCause.Causes.UNCLAIMED);
+		//manager.addSession(this, cause);
 	}
 
 	/**

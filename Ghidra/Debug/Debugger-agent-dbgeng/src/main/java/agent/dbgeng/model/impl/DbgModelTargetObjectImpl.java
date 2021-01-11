@@ -29,6 +29,7 @@ import ghidra.dbg.target.*;
 import ghidra.dbg.target.TargetAccessConditioned.TargetAccessibility;
 import ghidra.dbg.target.TargetAccessConditioned.TargetAccessibilityListener;
 import ghidra.dbg.target.TargetExecutionStateful.TargetExecutionState;
+import ghidra.dbg.target.schema.TargetObjectSchema;
 
 public class DbgModelTargetObjectImpl extends DefaultTargetObject<TargetObject, TargetObject>
 		implements DbgModelTargetObject {
@@ -43,9 +44,21 @@ public class DbgModelTargetObjectImpl extends DefaultTargetObject<TargetObject, 
 		getManager().addStateListener(accessListener);
 	}
 
+	public DbgModelTargetObjectImpl(AbstractDbgModel impl, TargetObject parent, String name,
+			String typeHint, TargetObjectSchema schema) {
+		super(impl, parent, name, typeHint, schema);
+		getManager().addStateListener(accessListener);
+	}
+
 	public void setAttribute(String key, String value) {
 		changeAttributes(List.of(), List.of(), Map.of( //
 			key, value), "Initialized");
+	}
+
+	@Override
+	protected void doInvalidate(String reason) {
+		super.doInvalidate(reason);
+		getManager().removeStateListener(accessListener);
 	}
 
 	public void setAccessibility(TargetAccessibility accessibility) {
@@ -118,6 +131,9 @@ public class DbgModelTargetObjectImpl extends DefaultTargetObject<TargetObject, 
 			}
 			case EXIT: {
 				exec = TargetExecutionState.TERMINATED;
+				if (getParentProcess() != null || this instanceof TargetProcess) {
+					getManager().removeStateListener(accessListener);
+				}
 				onExit();
 				break;
 			}

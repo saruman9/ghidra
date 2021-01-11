@@ -16,7 +16,7 @@
 package ghidra.dbg;
 
 enum DebuggerNormalModelClosedReason implements DebuggerModelClosedReason {
-	INSTANCE;
+	NORMAL;
 
 	@Override
 	public boolean hasException() {

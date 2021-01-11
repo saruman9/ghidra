@@ -31,8 +31,17 @@ import ghidra.async.AsyncUtils;
 import ghidra.async.TypeSpec;
 import ghidra.dbg.DebugModelConventions;
 import ghidra.dbg.target.TargetEnvironment;
+import ghidra.dbg.target.schema.*;
 import ghidra.dbg.util.PathUtils;
 
+@TargetObjectSchemaInfo(name = "Thread", elements = { //
+	@TargetElementType(type = Void.class) //
+}, attributes = { //
+	@TargetAttributeType(name = "Registers", type = DbgModelTargetRegisterContainerImpl.class, required = true, fixed = true), //
+	@TargetAttributeType(name = "Stack", type = DbgModelTargetStackImpl.class, required = true, fixed = true), //
+	@TargetAttributeType(name = TargetEnvironment.ARCH_ATTRIBUTE_NAME, type = String.class), //
+	@TargetAttributeType(type = Void.class) //
+})
 public class DbgModelTargetThreadImpl extends DbgModelTargetObjectImpl
 		implements DbgModelTargetThread {
 
@@ -54,7 +63,7 @@ public class DbgModelTargetThreadImpl extends DbgModelTargetObjectImpl
 
 	protected final DbgThread thread;
 
-	protected final DbgModelTargetRegisterContainer registers;
+	protected final DbgModelTargetRegisterContainerImpl registers;
 	protected final DbgModelTargetStackImpl stack;
 
 	private DbgModelTargetProcess process;
@@ -72,6 +81,7 @@ public class DbgModelTargetThreadImpl extends DbgModelTargetObjectImpl
 			registers, //
 			stack //
 		), Map.of( //
+			ACCESSIBLE_ATTRIBUTE_NAME, false, //
 			DISPLAY_ATTRIBUTE_NAME, getDisplay(), //
 			SUPPORTED_STEP_KINDS_ATTRIBUTE_NAME, SUPPORTED_KINDS //
 		), "Initialized");
@@ -152,8 +162,7 @@ public class DbgModelTargetThreadImpl extends DbgModelTargetObjectImpl
 		return manager.execute(new DbgThreadSelectCommand(manager, thread, null));
 	}
 
-	@Override
-	public DbgModelTargetRegisterContainer getRegisters() {
+	public DbgModelTargetRegisterContainerAndBank getRegisters() {
 		return registers;
 	}
 

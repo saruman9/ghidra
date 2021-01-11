@@ -23,16 +23,23 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import agent.gdb.manager.*;
 import agent.gdb.manager.impl.cmd.GdbCommandError;
 import ghidra.async.AsyncUtils;
+import ghidra.dbg.DebuggerModelClosedReason;
 import ghidra.dbg.agent.AbstractDebuggerObjectModel;
 import ghidra.dbg.error.DebuggerUserException;
 import ghidra.dbg.target.TargetAccessConditioned.TargetAccessibility;
 import ghidra.dbg.target.TargetObject;
+import ghidra.dbg.target.schema.AnnotatedSchemaContext;
+import ghidra.dbg.target.schema.TargetObjectSchema;
 import ghidra.program.model.address.*;
 
 public class GdbModelImpl extends AbstractDebuggerObjectModel {
 	// TODO: Need some minimal memory modeling per architecture on the model/agent side.
 	// The model must convert to and from Ghidra's address space names
 	protected static final String SPACE_NAME = "ram";
+
+	protected static final AnnotatedSchemaContext SCHEMA_CTX = new AnnotatedSchemaContext();
+	protected static final TargetObjectSchema ROOT_SCHEMA =
+		SCHEMA_CTX.getSchemaForClass(GdbModelTargetSession.class);
 
 	protected static <T> T translateEx(Throwable ex) {
 		Throwable t = AsyncUtils.unwrapThrowable(ex);
@@ -58,11 +65,16 @@ public class GdbModelImpl extends AbstractDebuggerObjectModel {
 
 	public GdbModelImpl() {
 		this.gdb = GdbManager.newInstance();
-		this.session = new GdbModelTargetSession(this);
+		this.session = new GdbModelTargetSession(this, ROOT_SCHEMA);
 
 		this.completedSession = CompletableFuture.completedFuture(session);
 
 		gdb.addStateListener(gdbExitListener);
+	}
+
+	@Override
+	public TargetObjectSchema getRootSchema() {
+		return ROOT_SCHEMA;
 	}
 
 	@Override
@@ -74,6 +86,7 @@ public class GdbModelImpl extends AbstractDebuggerObjectModel {
 	}
 
 	// TODO: Place make this a model method?
+	@Override
 	public AddressFactory getAddressFactory() {
 		return addressFactory;
 	}
@@ -122,6 +135,7 @@ public class GdbModelImpl extends AbstractDebuggerObjectModel {
 	}
 
 	public void terminate() throws IOException {
+		listeners.fire.modelClosed(DebuggerModelClosedReason.NORMAL);
 		session.invalidateSubtree("GDB is terminating");
 		gdb.terminate();
 	}

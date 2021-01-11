@@ -31,10 +31,16 @@ import ghidra.dbg.error.DebuggerRegisterAccessException;
 import ghidra.dbg.target.TargetAccessConditioned.TargetAccessibility;
 import ghidra.dbg.target.TargetObject;
 import ghidra.dbg.target.TargetRegisterBank;
+import ghidra.dbg.target.schema.*;
 import ghidra.dbg.util.ConversionUtils;
 
+@TargetObjectSchemaInfo(name = "RegisterContainer", elements = { //
+	@TargetElementType(type = DbgModelTargetRegisterImpl.class) //
+}, attributes = { //
+	@TargetAttributeType(type = Void.class) //
+}, canonicalContainer = true)
 public class DbgModelTargetRegisterContainerImpl extends DbgModelTargetObjectImpl
-		implements DbgModelTargetRegisterContainer {
+		implements DbgModelTargetRegisterContainerAndBank {
 
 	protected final DbgThread thread;
 

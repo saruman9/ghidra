@@ -23,7 +23,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 
 import agent.dbgeng.dbgeng.*;
-import agent.dbgeng.manager.DbgCause;
 import agent.dbgeng.manager.DbgCause.Causes;
 import agent.dbgeng.manager.DbgState;
 import agent.dbgeng.manager.impl.*;
@@ -115,47 +114,24 @@ public class DbgManager2Impl extends DbgManagerImpl {
 		ModelObject keyValue = currentSession.getKeyValue("Id");
 		Object val = keyValue.getValue();
 		DebugSessionId sid = new DebugSessionId((Integer) val);
-		DbgSessionImpl session = sessions.get(sid);
-		if (session != null) {
-			curSession = session;
-			return session;
-		}
-		session = new DbgSessionImpl(this, sid);
-		addSession(session, DbgCause.Causes.UNCLAIMED);
-		curSession = session;
-		return session;
+		curSession = getSessionComputeIfAbsent(sid);
+		return curSession;
 	}
 
 	@Override
 	public DbgProcessImpl getCurrentProcess() {
-		ModelObject currentProcess = dbgmodel.getUtil().getCurrentProcess();
-		ModelObject keyValue = currentProcess.getKeyValue("Id");
-		Long val = (Long) keyValue.getValue();
-		DebugProcessId id = getSystemObjects().getCurrentProcessId();
-		DbgProcessImpl process = processes.get(id);
-		if (process != null) {
-			curProcess = process;
-			return process;
+		synchronized (processes) {
+			DebugProcessId id = getSystemObjects().getCurrentProcessId();
+			return processes.get(id);
 		}
-		process = new DbgProcessImpl(this, id, val);
-		addProcess(process, DbgCause.Causes.UNCLAIMED);
-		curProcess = process;
-		return process;
 	}
 
 	@Override
 	public DbgThreadImpl getCurrentThread() {
-		ModelObject currentThread = dbgmodel.getUtil().getCurrentThread();
-		ModelObject keyValue = currentThread.getKeyValue("Id");
-		Long val = (Long) keyValue.getValue();
-		DebugThreadId id = getSystemObjects().getCurrentThreadId();
-		DbgThreadImpl thread = threads.get(id);
-		if (thread != null) {
-			return thread;
+		synchronized (threads) {
+			DebugThreadId id = getSystemObjects().getCurrentThreadId();
+			return threads.get(id);
 		}
-		thread = new DbgThreadImpl(this, curProcess, id, val);
-		addThread(thread);
-		return thread;
 	}
 
 }
